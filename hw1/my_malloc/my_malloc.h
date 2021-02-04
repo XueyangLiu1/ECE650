@@ -26,3 +26,8 @@ void bf_free(void *ptr);
 unsigned long get_data_segment_size();
 unsigned long get_data_segment_free_space_size();
 void printList();
+
+unsigned long totalSBRKed = 0;
+unsigned long allocated = 0;
+block_t *head = NULL;
+block_t *tail = NULL;
