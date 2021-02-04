@@ -84,7 +84,7 @@ curr: 0x562b0977d184, allocated size: 1024, allocated address: 0x562b0977d19c
 
 ### 3.1 Test Results
 
-| Pattern | First-Fit<Br>Exec Time | First-Fit<Br>Fragmentation | Best-Fit<Br>Exec Time | Best-Fit<Br>Fragmentation |
+| Pattern | First-Fit<Br>Execution Time | First-Fit<Br>Fragmentation | Best-Fit<Br>Execution Time | Best-Fit<Br>Fragmentation |
 | --- | --- | --- | --- | --- |
 | Equal | 17.93s | 0.45 | 17.81s | 0.45 |
 | Small | 16.96s | 0.09 | 11.80s | 0.04 |
@@ -94,6 +94,18 @@ The provided tests were run several times, each `combination of the malloc polic
 
 ### 3.2 Analysis
 
+#### 3.2.1 Equal_size_allocs
 
-## 4. 
+For `equal_size_allocs`, the allocated mem-region is all 128B and all free-mem region in the free-list will be the same size (before merging with each other). In this situation, even with merging policy applied, FF and BF algorithms will do exactly same thing since they both use the head of the free-list every time, except for when the free-list is empty. In that situation, they also do the same thing -- call `sbrk()` to get a new mem-region. So their execution time and fragmentation resemble.
 
+#### 3.2.2 Small_range_rand_allocs
+
+For `small_range_rand_allocs`, the test basically does the following: Malloc a bunch of similar sized mem-region, free them and then malloc again. In this procedure, if using FF, it will `split` or `merge` or `sbrk()` a lot, while using BF, it is easier to find a suitable one. So that BF is faster than FF in this test.
+
+#### 3.2.3 Large_range_rand_allocs
+
+For `large_range_rand_allocs`, the test does similar thing compared with `small_range_rand_allocs`, only that the malloced mem-region sizes vary much more greatly. And in this case, the free-list will be longer and traversing through it will consume a lot of time, which is the reason that I beleive to cause BF slower than FF. 
+
+#### 3.2.4 Conclusion
+
+In our daily usage of malloc, it is more likely that we don't always malloc mem-regions with similar sizes. So according to the test result, using FF under this circumstance will be faster than BF. Of course, if we are informed in advance that the malloced mem-region will have similar sizes, BF will be a better choice. 
