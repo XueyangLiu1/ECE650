@@ -62,13 +62,14 @@ int main(int argc, char *argv[])
     sum += array[3][i];
   } //for i
   printf("expected empty list\n");
-  // printList();
+  printList();
+  printf("arr[0]: %p, size: %lu\n",array[0],size*sizeof(int));
   FREE(array[0]);
   printf("expected list with 1 node with size 16\n");
-  // printList();
+  printList();
   FREE(array[2]);
   printf("expected list with 2 node with size 16 and 32\n");
-  // printList();
+  printList();
 
   size = 7;
   expected_sum += size * size;
@@ -92,13 +93,13 @@ int main(int argc, char *argv[])
 
   FREE(array[5]);
   printf("expected list with 3 node with size 16 and 32 and 1024\n");
-  // printList();
+  printList();
   FREE(array[1]);
   printf("expected list with 2 node with size 160 and 1024\n");
-  // printList();
+  printList();
   FREE(array[3]);
   printf("expected list with 2 node with size 312 and 1024\n");
-  // printList();
+  printList();
 
   size = 23;
   expected_sum += size * size;
@@ -120,7 +121,7 @@ int main(int argc, char *argv[])
   } //for i
   FREE(array[4]);
   printf("expected list with 1 node with size 1256\n");
-  // printList();
+  printList();
 
   size = 10;
   expected_sum += size * size;
@@ -143,16 +144,16 @@ int main(int argc, char *argv[])
   } //for i
   FREE(array[6]);
   printf("expected list with 2 node with size 92 and 1040\n");
-  // printList();
+  printList();
   FREE(array[7]);
   printf("expected list with 2 node with size 132 and 1040\n");
-  // printList();
+  printList();
   FREE(array[8]);
   printf("expected list with 2 node with size 196 and 1040\n");
-  // printList();
+  printList();
   FREE(array[9]);
   printf("expected list with 1 node with size 1412\n");
-  // printList();
+  printList();
 
   if (sum == expected_sum) {
     printf("Calculated expected value of %d\n", sum);

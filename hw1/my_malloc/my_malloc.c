@@ -69,6 +69,15 @@ void merge(block_t *block){
     }else{
         block_t *previous = block->prev;
         block_t *nextOne = block->next;
+        if(nextOne!=NULL && (void *)block + block->size + block_size == (void *)nextOne){
+            block->size = block->size + nextOne->size + block_size;
+            block->next = nextOne->next;
+            if(block->next!=NULL){
+                block->next->prev = block;
+            }else{
+                tail = block;
+            }
+        }
         if(previous!=NULL && (void *)previous + previous->size + block_size == (void *)block){
             previous->size = previous->size + block->size + block_size;
             previous->next = block->next;
@@ -77,16 +86,6 @@ void merge(block_t *block){
             }else{
                 tail = previous;
             }
-            merge(previous);
-        }else if(nextOne!=NULL && (void *)block + block->size + block_size == (void *)nextOne){
-            block->size = block->size + nextOne->size + block_size;
-            block->next = nextOne->next;
-            if(block->next!=NULL){
-                block->next->prev = block;
-            }else{
-                tail = block;
-            }
-            merge(block);
         }
     }
 }
@@ -152,8 +151,9 @@ void *bf_malloc(size_t size){
 
 void free(void *ptr){
     if(ptr==NULL) return;
-    block_t *blockStart = ptr - block_size;
-    assert(blockStart->next == NULL && blockStart->prev == NULL);
+    block_t *blockStart = (block_t *)(ptr - block_size);
+    printf("ptr: %p, bs: %p, allocated size: %lu\n",ptr,blockStart,blockStart->size);
+    //assert(blockStart->next == NULL && blockStart->prev == NULL);
     if(head==NULL && tail==NULL){
         head = blockStart;
         tail = blockStart;
@@ -179,7 +179,6 @@ void free(void *ptr){
             blockStart->prev->next = blockStart;
             traversal->prev = blockStart;
         }
-        traversal = NULL;
     }
     allocated -= blockStart->size+block_size;
     merge(blockStart);
