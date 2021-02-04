@@ -17,11 +17,6 @@ void *generateNew(size_t size){
         newOne->size = size;
         newOne->prev = NULL;
         newOne->next = NULL;
-        // block_t *newTwo = ptr + required;
-        // newTwo->size = required * 3 - 1 * block_size;
-        // newTwo->prev = NULL;
-        // newTwo->next = NULL;
-        // free((void *)newTwo + block_size);
         return (void *)newOne + block_size;
     }
 }
@@ -149,11 +144,11 @@ void *bf_malloc(size_t size){
     }
 }
 
-void free(void *ptr){
+void my_free(void *ptr){
     if(ptr==NULL) return;
     block_t *blockStart = (block_t *)(ptr - block_size);
-    printf("ptr: %p, bs: %p, allocated size: %lu\n",ptr,blockStart,blockStart->size);
-    //assert(blockStart->next == NULL && blockStart->prev == NULL);
+    //printf("ptr: %p, bs: %p, allocated size: %lu\n",ptr,blockStart,blockStart->size);
+    assert(blockStart->next == NULL && blockStart->prev == NULL);
     if(head==NULL && tail==NULL){
         head = blockStart;
         tail = blockStart;
@@ -184,8 +179,8 @@ void free(void *ptr){
     merge(blockStart);
 }
 
-void ff_free(void *ptr){free(ptr);}
-void bf_free(void *ptr){free(ptr);}
+void ff_free(void *ptr){my_free(ptr);}
+void bf_free(void *ptr){my_free(ptr);}
 
 unsigned long get_data_segment_size(){
     return totalSBRKed;

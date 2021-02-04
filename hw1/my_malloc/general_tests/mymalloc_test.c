@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
   } //for i
   printf("expected empty list\n");
   printList();
-  printf("arr[0]: %p, size: %lu\n",array[0],size*sizeof(int));
+  printf("arr[0]: %p, size: %lu\n",array[0],4*sizeof(int));
   FREE(array[0]);
   printf("expected list with 1 node with size 16\n");
   printList();
