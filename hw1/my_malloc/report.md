@@ -22,17 +22,24 @@ This data structure served as tags bonded to memory regions acquired from callin
 
 ### 1.2 My Malloc
 
+The project task sheet asked me to implement two kinds of malloc: First-fit and Best-fit. Firstly, let me illustrate the common feature of those two mallocs. They both needed to go to the linked list first and search for a suitable free-mem region to allocate. If they could not find one, `sbrk()` would be called to generate a new mem region. 
+The difference between them is that First-fit will use the first suitable free-mem region and the Best-fit will go throught the whole linked list and use the smallest among all suitable free-mem regions. By suitable, I mean either the free-mem region size just equals to the `required_size` or it is larger than `sizeof(block_t) + required_size`. When it equals, the free-mem region will simply be removed from the free-list and returned for use. And when it is large enough, it will be split into two free-mem region, one remains in the free-list and the other returned for use. 
+
 ### 1.3 My Free
 
+When the user calls `free()`, the free-mem region needed to be inserted into the free-list. Note that to allow `merge`, the free-mem regions were designed to be address-ascendingly-sorted in the free-list. My implementation first traveres through the free-list and finds the correct place to insert, then insert the free-mem region and check if it can be merged with its previous one or next one. 
+
 ### 1.4 Merge
+
+Every time a free-mem region is inserted into the free-list, it will be checked if it can be merged with its previous free-mem region or its next one. The merge operation is basically the opposite of split mentioned above in `My Malloc`. One thing worth mentioned is that the newly inserted free-mem region should be better check its next region first and then its previous one to avoid some kind of pointer mess.
 
 ## 2. Functionality Tests
 
 Upon finishing writing the code, I used the provided `general_tests` to test my code. I also added some printf statements to print the expected free-mem region list (with `merge` and `address-ascending sort` applied) and implemented a `printList()` function to print the status of the free-mem region list.
 
-After fixing some bugs, the code run as expected and was valgrind-clean. Some example tests and outputs are shown below.
+After fixing some bugs, the code run as expected and was valgrind-clean. Part of all tests and outputs are shown below.
 
-### tests
+### Tests:
 
 ```C
 printf("expected empty list\n");
@@ -55,7 +62,7 @@ printf("expected list with 2 node with size 160 and 1024\n");
 printList();
 ```
 
-### outputs
+### Outputs:
 
 ```
 expected empty list
@@ -85,4 +92,8 @@ curr: 0x562b0977d184, allocated size: 1024, allocated address: 0x562b0977d19c
 
 The provided tests were run several times, each `combination of the malloc policy and the tested size` resulting in a slightly `different` execution time but `same` fragmentation.  
 
-## 4. Conclusion
+### 3.2 Analysis
+
+
+## 4. 
+
