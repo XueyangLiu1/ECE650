@@ -15,7 +15,8 @@ typedef struct block_tag block_t;
 
 void *generateNew(size_t size);
 void *removeFromLst(block_t *block,size_t size);
-void free(void *ptr);
+void merge(block_t *block);
+void my_free(void *ptr);
 
 void *ff_malloc(size_t size);
 void ff_free(void *ptr);
