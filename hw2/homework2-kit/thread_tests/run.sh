@@ -1,7 +1,7 @@
 echo "Making"
 make clean
 make
-for i in {1..200}
+for i in {1..20}
 do
 echo "Testing $i thread_test"
 ./thread_test
