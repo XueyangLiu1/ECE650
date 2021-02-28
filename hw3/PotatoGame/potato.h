@@ -14,6 +14,7 @@ public:
 
     void print_path(){
         assert(num_passed>=1);
+        printf("Trace of potato:\n");
         for(int i = 0; i<num_passed-1; i++){
             printf("%d,",path[i]);
         }
