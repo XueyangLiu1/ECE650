@@ -69,6 +69,9 @@ int main(int argc, char *argv[])
 
   cout << "Server received: " << buffer << endl;
 
+  const char *message = "I'm the server! ack!";
+  send(client_connection_fd, message, strlen(message), 0);
+
   freeaddrinfo(host_info_list);
   close(socket_fd);
 

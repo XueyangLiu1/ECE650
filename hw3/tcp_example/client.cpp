@@ -52,6 +52,10 @@ int main(int argc, char *argv[])
   const char *message = "hi there!";
   send(socket_fd, message, strlen(message), 0);
 
+  char buffer[512];
+  recv(socket_fd, buffer, 20, 0);
+  buffer[20] = 0;
+
   freeaddrinfo(host_info_list);
   close(socket_fd);
 
