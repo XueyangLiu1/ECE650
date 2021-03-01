@@ -4,6 +4,9 @@
 #include <netdb.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include <vector>
+
+#include "potato.h"
 
 using namespace std;
 
@@ -70,6 +73,7 @@ int init_client(const char *hostname, const char *port){
     if (status != 0) {
         cerr << "Error: cannot get address info for host" << endl;
         cerr << "  (" << hostname << "," << port << ")" << endl;
+        cerr<<"3.1"<<endl;
         return -1;
     } //if
 
@@ -104,4 +108,43 @@ int accept_connection(int connection_fd, string *ip_addr){
     } //if
     *ip_addr = inet_ntoa(((struct sockaddr_in *)&socket_addr)->sin_addr);
     return client_connection_fd;
+}
+
+int get_port(int socket_fd){
+  struct sockaddr_in addr;
+  socklen_t size_addr = sizeof(addr);
+  if (getsockname(socket_fd, (struct sockaddr *)&addr, &size_addr) == -1){
+      cerr<<"Error: getsockname error"<<endl;
+  }
+  return ntohs(addr.sin_port);
+}
+
+void init_fdset(fd_set &readfds, vector<int> fds, int &nfds){
+    FD_ZERO(&readfds);
+    nfds = fds[0];
+    for(int i=0;i<fds.size();i++){
+        FD_SET(fds[i],&readfds);
+        if(fds[i]>nfds){
+            nfds = fds[i];
+        }
+    }
+}
+
+void wait_for_potato(vector<int> fds,Potato &potato){
+    fd_set readfds;
+    int nfds;
+    init_fdset(readfds,fds,nfds);
+    select(nfds+1,&readfds,NULL,NULL,NULL);
+    for (int i = 0; i<fds.size();i++) {
+      if (FD_ISSET(fds[i], &readfds)) {
+        recv(fds[i], &potato, sizeof(potato), MSG_WAITALL);
+        break;
+      }
+    }
+}
+
+void shutdown_fds(vector<int> fds){
+    for (int i = 0; i < fds.size(); i++) {
+        close(fds[i]);
+    }
 }

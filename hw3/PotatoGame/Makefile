@@ -1,11 +1,8 @@
-TARGETS=player ringmaster
+all: ringmaster player
 
-all: $(TARGETS)
+ringmaster: ringmaster.cpp server_actions.h
+	g++ -g -o ringmaster ringmaster.cpp
+player: player.cpp server_actions.h
+	g++ -g -o player player.cpp
 clean:
-	rm -f $(TARGETS)
-
-player: player.cpp
-	g++ -g -o $@ $<
-
-ringmaster: ringmaster.cpp
-	g++ -g -o $@ $<
+	rm -rf ringmaster player

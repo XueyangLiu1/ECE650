@@ -1,5 +1,4 @@
 #include "server_actions.h"
-#include "potato.h"
 #include <vector>
 
 using namespace std;
@@ -10,7 +9,7 @@ void print_start(int num_players, int num_hops){
     cout<<"Hops = "<<num_hops<<endl;
 }
 
-void connect_with_players(int master_fd, int num_players, vector<int> fds, vector<int> ports, vector<string> addrs){
+void connect_with_players(int master_fd, int num_players, vector<int> &fds, vector<int> &ports, vector<string> &addrs){
     for(int player_id = 0; player_id < num_players; player_id++){
         string ip_addr;
         int port;
@@ -27,8 +26,34 @@ void connect_with_players(int master_fd, int num_players, vector<int> fds, vecto
     }
 }
 
-void init_player_circle(int num_players, vector<int> ports, vector<string> addrs){
-    
+void init_player_circle(int num_players, vector<int> player_fds, vector<int> ports, vector<string> addrs){
+    for(int player_id = 0; player_id < num_players; player_id++){
+        //select the server player for curr player
+        int player_server_index = (player_id + 1) % num_players;
+        
+        //format the info for socket transmission
+        int player_server_port = ports[player_server_index];
+        string player_server_addr = addrs[player_server_index];
+        char player_server_addr_c[100];
+        memset(player_server_addr_c, 0, sizeof(player_server_addr_c));
+        strcpy(player_server_addr_c, player_server_addr.c_str());
+        //send the server player's addr and port to curr player
+        //for the curr player to operate
+        send(player_fds[player_id],&player_server_port,sizeof(player_server_port),0);
+        send(player_fds[player_id],&player_server_addr_c,sizeof(player_server_addr_c),0);
+    }
+}
+
+
+void shutdown_game(Potato &potato, vector<int> player_fds, bool game_played){
+    assert(potato.num_hops==0);
+    for (int i = 0; i < player_fds.size(); i++) {
+        send(player_fds[i], &potato, sizeof(potato), 0);
+    }
+    if(game_played){
+        potato.print_path();
+    }
+    shutdown_fds(player_fds);
 }
 
 int main(int argc, char *argv[]){
@@ -60,14 +85,22 @@ int main(int argc, char *argv[]){
     vector<int> player_ports;
     vector<string> player_addrs;
     connect_with_players(master_fd, num_players,player_fds,player_ports,player_addrs);
-    init_player_circle(num_players,player_ports,player_addrs);
+    init_player_circle(num_players,player_fds,player_ports,player_addrs);
 
     //start the game and wait for the potato to come back
     Potato potato;
     potato.num_hops = num_hops;
-
-    srand((unsigned int)time(NULL)+num_players);
-    int random = rand() % num_players;
-
-
+    bool game_played = false;
+    if(num_hops!=0){
+        game_played = true;
+        srand((unsigned int)time(NULL)+num_players);
+        int random = rand() % num_players;
+        cout << "Ready to start the game, sending potato to player " << random << endl;
+        send(player_fds[random],&potato,sizeof(potato),0);
+        wait_for_potato(player_fds,potato);
+    }
+    assert(potato.num_hops==0);
+    shutdown_game(potato,player_fds,game_played);
+    close(master_fd);
+    return 0;
 }
