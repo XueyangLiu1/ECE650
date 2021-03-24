@@ -6,7 +6,7 @@ void add_player(connection *C, int team_id, int jersey_num, string first_name, s
 {
     work W(*C);
     stringstream statement;
-    statement << "INSERT INTO PLAYER (TEAM_ID, UNIFORM_NUM, FIRST_NAME, LAST_NAME, MPG," 
+    statement<<"INSERT INTO PLAYER (TEAM_ID, UNIFORM_NUM, FIRST_NAME, LAST_NAME, MPG," 
         <<"PPG, RPG, APG, SPG, BPG) VALUES ("<<team_id<<", "<<jersey_num<<", "
         <<W.quote(first_name)<<", "<<W.quote(last_name)<<", "<<mpg<<", "<<ppg
         <<", "<<rpg<<", "<<apg<<", "<<spg<<", "<<bpg<<");";

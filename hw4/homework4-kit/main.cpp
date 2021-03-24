@@ -38,8 +38,11 @@ int main (int argc, char *argv[])
 
   dropTable(DROP_TABLE,C);
   createTable(CREATE_TABLE,C);
-  exercise(C);
-  
+  addColorFromFile("color.txt",C);
+  addStateFromFile("state.txt",C);
+  addTeamFromFile("team.txt",C);
+  addPlayerFromFile("player.txt",C);
+  //exercise(C);
 
   //Close database connection
   C->disconnect();
