@@ -1,10 +1,15 @@
 #include <iostream>
 #include <pqxx/pqxx>
 
+
 #include "exerciser.h"
+#include "general_funcs.h"
 
 using namespace std;
 using namespace pqxx;
+
+#define CREATE_TABLE "createTables.txt"
+#define DROP_TABLE "dropTables.txt"
 
 int main (int argc, char *argv[]) 
 {
@@ -31,8 +36,9 @@ int main (int argc, char *argv[])
   //TODO: create PLAYER, TEAM, STATE, and COLOR tables in the ACC_BBALL database
   //      load each table with rows from the provided source txt files
 
-
-  exercise(C);
+  dropTable(DROP_TABLE,C);
+  createTable(CREATE_TABLE,C);
+  //exercise(C);
 
 
   //Close database connection
