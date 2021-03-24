@@ -38,8 +38,8 @@ int main (int argc, char *argv[])
 
   dropTable(DROP_TABLE,C);
   createTable(CREATE_TABLE,C);
-  //exercise(C);
-
+  exercise(C);
+  
 
   //Close database connection
   C->disconnect();
