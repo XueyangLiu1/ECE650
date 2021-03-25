@@ -10,7 +10,14 @@ void test1(connection *C){
 
 void exercise(connection *C)
 {
-    test1(C);
+    query1(C, 1, 35, 36, 0, 0, 0, 0, 5, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    query1(C, 0, 35, 36, 0, 0, 0, 1, 5, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    query1(C, 0, 35, 36, 0, 0, 0, 0, 5, 6, 0, 0, 0, 1, 0, 0, 0, 0, 0);
+    query1(C, 0, 35, 36, 0, 0, 0, 0, 5, 6, 0, 0, 0, 0, 0, 0, 1, 0, 0);
+    query2(C,"Red");
+    query3(C,"Syracuse");
+    query4(C,"NC","DarkBlue");
+    query5(C,4);
 }
 
 

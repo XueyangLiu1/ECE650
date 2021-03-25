@@ -27,26 +27,18 @@ int main (int argc, char *argv[])
       cout << "Can't open database" << endl;
       return 1;
     }
+    dropTable(DROP_TABLE,C);
+    createTable(CREATE_TABLE,C);
+    addColorFromFile("color.txt",C);
+    addStateFromFile("state.txt",C);
+    addTeamFromFile("team.txt",C);
+    addPlayerFromFile("player.txt",C);
+    exercise(C);
+    C->disconnect();
   } catch (const std::exception &e){
     cerr << e.what() << std::endl;
     return 1;
   }
-
-
-  //TODO: create PLAYER, TEAM, STATE, and COLOR tables in the ACC_BBALL database
-  //      load each table with rows from the provided source txt files
-
-  dropTable(DROP_TABLE,C);
-  createTable(CREATE_TABLE,C);
-  addColorFromFile("color.txt",C);
-  addStateFromFile("state.txt",C);
-  addTeamFromFile("team.txt",C);
-  addPlayerFromFile("player.txt",C);
-  //exercise(C);
-
-  //Close database connection
-  C->disconnect();
-
   return 0;
 }
 
