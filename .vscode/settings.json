@@ -4,6 +4,14 @@
         "cstdio": "cpp",
         "iostream": "cpp",
         "ostream": "cpp",
-        "pqxx": "cpp"
+        "pqxx": "cpp",
+        "iosfwd": "cpp",
+        "array": "cpp",
+        "bitset": "cpp",
+        "deque": "cpp",
+        "string": "cpp",
+        "vector": "cpp",
+        "string_view": "cpp",
+        "unordered_map": "cpp"
     }
 }
