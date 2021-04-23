@@ -44,7 +44,7 @@ int main(){
     }
 
     char command[100];
-    sprintf(command, "insmod sneaky_mod.ko sneaky_pid=%d", (int)getpid());
+    sprintf(command, "insmod sneaky_mod.ko spid=%d", (int)getpid());
     system(command);
 
     char input;
